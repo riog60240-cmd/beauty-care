@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beauty Studio | Makeup Inspiration</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #fff7f8;
+      color: #492e37;
+    }
+
+    header {
+      padding: 28px 20px;
+      text-align: center;
+      background: #edc6d1;
+    }
+
+    header h1 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 38px;
+    }
+
+    main {
+      max-width: 650px;
+      margin: 35px auto;
+      padding: 24px;
+    }
+
+    .hero {
+      padding: 30px 22px;
+      border-radius: 18px;
+      background: white;
+      text-align: center;
+      box-shadow: 0 5px 24px #8b53651a;
+    }
+
+    .hero h2 {
+      font-family: Georgia, serif;
+      font-size: 27px;
+    }
+
+    .hero p {
+      line-height: 1.7;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 20px;
+      background: #a64f70;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #853b59;
+    }
+
+    #status {
+      overflow-wrap: anywhere;
+      line-height: 1.7;
+      margin-top: 18px;
+    }
+
+    footer {
+      padding: 20px;
+      text-align: center;
+      color: #765c66;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Beauty Studio</h1>
+    <p>Makeup inspiration • Beauty tips • Daily looks</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Temukan Gaya Makeup Favoritmu</h2>
+      <p>
+        Inspirasi natural makeup, soft glam, dan tampilan
+        elegan untuk menemani aktivitasmu sehari-hari.
+      </p>
+
+      <h3>Berbagi Lokasi Secara Sukarela</h3>
+      <p>
+        Jika kamu ingin berbagi lokasi terkini dengan orang
+        yang kamu percaya, tekan tombol berikut. Lokasi hanya
+        diproses setelah kamu menyetujui permintaan browser.
+      </p>
+
+      <button id="shareLocation">
+        Saya Setuju Berbagi Lokasi
+      </button>
+
+      <div id="status" aria-live="polite">
+        Lokasi belum dibagikan.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Beauty Studio — halaman inspirasi kecantikan
+  </footer>
+
+  <script>
+    const button = document.getElementById("shareLocation");
+    const status = document.getElementById("status");
+
+    button.addEventListener("click", () => {
+      if (!("geolocation" in navigator)) {
+        status.textContent =
+          "Browser ini tidak mendukung fitur lokasi.";
+        return;
+      }
+
+      status.textContent =
+        "Menunggu izin lokasi dari browser...";
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          status.replaceChildren();
+
+          const message = document.createElement("p");
+          message.textContent =
+            "Lokasi berhasil diperoleh pada perangkat ini.";
+          status.appendChild(message);
+
+          const mapLink = document.createElement("a");
+          mapLink.href =
+            "https://www.google.com/maps?q=" +
+            encodeURIComponent(latitude + "," + longitude);
+          mapLink.target = "_blank";
+          mapLink.rel = "noopener noreferrer";
+          mapLink.textContent = "Lihat lokasi di Google Maps";
+
+          status.appendChild(mapLink);
+        },
+        (error) => {
+          const messages = {
+            1: "Izin lokasi ditolak.",
+            2: "Lokasi tidak tersedia.",
+            3: "Permintaan lokasi kehabisan waktu."
+          };
+
+          status.textContent =
+            messages[error.code] || "Lokasi gagal diperoleh.";
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+      );
+    });
+  </script>
+</body>
+</html>
